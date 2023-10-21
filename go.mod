@@ -1,4 +1,4 @@
-module github.com/kelvie/gbmonctl
+module github.com/3ddavies/m32ucli
 
 go 1.16
 

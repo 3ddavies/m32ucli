@@ -17,7 +17,7 @@ You'll need libhidapi and libudev -- on Debians that's ~apt install
 libhidapi-dev libudev-dev~, and on darwin you can use ~brew install hidapi~
 
 #+begin_src sh
-go install github.com/kelvie/gbmonctl@latest
+go install github.com/3ddavies/m32ucli@latest
 #+end_src
 
 ** Mac specific steps:
@@ -37,19 +37,19 @@ $ brew info hidapi | grep files
 /opt/homebrew/Cellar/hidapi/0.12.0 (19 files, 185KB) *
 #+end_src
 
-Now try to install ~gbmonctl~ like this:
+Now try to install ~~ like this:
 
 #+begin_src sh
-CGO_CFLAGS='-I/opt/homebrew/Cellar/hidapi/0.12.0/include' CGO_LDFLAGS='-L/opt/homebrew/Cellar/hidapi/0.12.0/lib' go install github.com/kelvie/gbmonctl@latest
+CGO_CFLAGS='-I/opt/homebrew/Cellar/hidapi/0.12.0/include' CGO_LDFLAGS='-L/opt/homebrew/Cellar/hidapi/0.12.0/lib' go install github.com/3ddavies/m32ucli@latest
 #+end_src
 
 * To use:
 
 #+begin_example
-~ ~/go/bin/gbmonctl
+~ ~/go/bin/m32ucli
 ERROR: -prop or -propNum is required
 
-Usage of gbmonctl:
+Usage of m32ucli:
   -n    Dry run: test commands and print instead
   -prop string
         Property to set. Available properties:
@@ -77,19 +77,19 @@ Usage of gbmonctl:
 Examples:
 #+begin_src sh
 # Set brightness to 50
-gbmonctl -prop brightness -val 50
+m32ucli -prop brightness -val 50
 
 # Set contrast to 50
-gbmonctl -prop contrast -v 50
+m32ucli -prop contrast -v 50
 
 # Set sharpness to 5
-gbmonctl -prop sharpness -v 5
+m32ucli -prop sharpness -v 5
 
 # Set colour temperature to 2700K for nighttime
-gbmonctl -prop colour-mode -val 3
-gbmonctl -prop rgb-red -val 100
-gbmonctl -prop rgb-green -val 66
-gbmonctl -prop rgb-blue -val 35
+m32ucli -prop colour-mode -val 3
+m32ucli -prop rgb-red -val 100
+m32ucli -prop rgb-green -val 66
+m32ucli -prop rgb-blue -val 35
 #+end_src
 
 When using propNum, I don't recommend using values that are out of the ranges

@@ -63,6 +63,13 @@ func main() {
 			Value: 0xe069,
 		},
 		{
+			Name:  "input",
+			Description: "0: HDMI1, 1: HDMI2, 2: Display Port, 3: USB-C",
+			Min:   0,
+			Max:   3,
+			Value: 0xe02d,
+		},
+		{
 			Name:        "colour-mode",
 			Description: "0 is cool, 1 is normal, 2 is warm, 3 is user-defined.",
 			Min:         0,
