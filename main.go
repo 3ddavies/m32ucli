@@ -30,7 +30,7 @@ type Property struct {
 
 type MonitorValues struct {
 	Number int
-	Value uint16
+	Serial string
 }
 
 
@@ -201,25 +201,34 @@ func main() {
 	Monitor := []MonitorValues{
 		{
 			Number: 1,
-			Value: 0x1100,
+			Serial: "",
 		},
 		{
 			Number: 2,
-			Value: 0x1101,
+			Serial: "",
 		},
 		{
 			Number: 3,
-			Value: 0x1110,
+			Serial: "",
 		},
 	}
 
 
 
 
-	dev, err := hid.OpenFirst(0x0bda, Monitor[*monitorNum].Value)
+	dev, err := hid.OpenFirst(0x0bda, 0x1100)
+	
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	sn, err := GetSerialNbr(dev)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Print(sn)
 
 	// TODO: get current value and nicely transition to the expected value like in
 	// TODO: read a value if "v" not specified, I think the value is in the byte
