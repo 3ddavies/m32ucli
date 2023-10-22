@@ -232,3 +232,4 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Print("Property set.")
+}
