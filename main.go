@@ -233,3 +233,4 @@ func main() {
 	}
 	log.Print("Property set.")
 }
+}
