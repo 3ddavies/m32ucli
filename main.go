@@ -28,6 +28,12 @@ type Property struct {
 	Value       uint16
 }
 
+type MonitorValues struct {
+	Number int
+	Value uint16
+}
+
+
 func main() {
 	properties := []Property{
 		{
@@ -114,6 +120,8 @@ func main() {
 	propNum := flag.Uint("propNum", 0, "Property number to set instead of -prop")
 	val := flag.Int("val", -1, "Value to set property to")
 	dryrun := flag.Bool("n", false, "Dry run: test commands and print instead")
+	monitorNum := flag.Int("monitor", 0, "Monitor number (if multiple)")
+
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	flag.Parse()
@@ -153,6 +161,8 @@ func main() {
 		prop16 = uint16(*propNum)
 	}
 
+	//everything above this line is just to generate the cli help messages mostly
+
 	// Buf is actually 192 bytes, but we need one for the report id
 	buf := make([]byte, 193)
 
@@ -186,7 +196,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dev, err := hid.OpenFirst(0x0bda, 0x1100)
+	//the below line is where the HID device is opened, and where I will need to have the check for multiple monitors.
+
+	Monitor := []MonitorValues{
+		{
+			Number: 1,
+			Value: 0x1100,
+		},
+		{
+			Number: 2,
+			Value: 0x1101,
+		},
+		{
+			Number: 3,
+			Value: 0x1110,
+		},
+	}
+
+
+
+	//if *monitorNum != 0 {
+
+	//} else {
+	dev, err := hid.OpenFirst(0x0bda, Monitor[*monitorNum].Value)
+	//}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -199,4 +232,3 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Print("Property set.")
-}
