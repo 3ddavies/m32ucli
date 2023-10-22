@@ -120,7 +120,7 @@ func main() {
 	propNum := flag.Uint("propNum", 0, "Property number to set instead of -prop")
 	val := flag.Int("val", -1, "Value to set property to")
 	dryrun := flag.Bool("n", false, "Dry run: test commands and print instead")
-	monitorNum := flag.Int("monitor", 0, "Monitor number (if multiple)")
+	//monitorNum := flag.Int("monitor", 0, "Monitor number (if multiple)")
 
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -198,20 +198,20 @@ func main() {
 
 	//the below line is where the HID device is opened, and where I will need to have the check for multiple monitors.
 
-	Monitor := []MonitorValues{
-		{
-			Number: 1,
-			Serial: "",
-		},
-		{
-			Number: 2,
-			Serial: "",
-		},
-		{
-			Number: 3,
-			Serial: "",
-		},
-	}
+	//Monitor := []MonitorValues{
+	//	{
+	//		Number: 1,
+	//		Serial: "",
+	//	},
+	//	{
+	//		Number: 2,
+	//		Serial: "",
+	//	},
+	//	{
+	//		Number: 3,
+	//		Serial: "",
+	//	},
+	//}
 
 
 
