@@ -216,19 +216,20 @@ func main() {
 
 
 
-	dev, err := hid.OpenFirst(0x0bda, 0x1100)
-	
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	sn, err := dev.GetDeviceInfo()
+	//dev, err := hid.OpenFirst(0x0bda, 0x1100)
+	dev, err := hid.OpenPath("/dev/usb/hiddev0")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println(sn)
+	//sn, err := dev.GetDeviceInfo()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//log.Println(sn)
 
 	// TODO: get current value and nicely transition to the expected value like in
 	// TODO: read a value if "v" not specified, I think the value is in the byte
