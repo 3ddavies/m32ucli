@@ -198,14 +198,25 @@ func main() {
 
 	//the below line is where the HID device is opened, and where I will need to have the check for multiple monitors.
 
-
-
-
-	if *monitorNum != 0 {
-
-	} else {
-	dev, err := hid.OpenFirst(0x0bda, 0x1100)
+	Monitor := []MonitorValues{
+		{
+			Number: 1,
+			Value: 0x1100,
+		},
+		{
+			Number: 2,
+			Value: 0x1101,
+		},
+		{
+			Number: 3,
+			Value: 0x1110,
+		},
 	}
+
+
+
+
+	dev, err := hid.OpenFirst(0x0bda, Monitor[*monitorNum].Value)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -218,3 +229,4 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Print("Property set.")
+}
