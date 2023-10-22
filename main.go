@@ -228,7 +228,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println(dev.SerialNbr)
+	log.Println(dev.DeviceInfo.SerialNbr)
 
 	// TODO: get current value and nicely transition to the expected value like in
 	// TODO: read a value if "v" not specified, I think the value is in the byte
