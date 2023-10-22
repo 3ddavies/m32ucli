@@ -222,7 +222,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sn, err := hid.GetSerialNbr(dev)
+	sn, err := hid.GetSerialNumber(dev)
 
 	if err != nil {
 		log.Fatal(err)
