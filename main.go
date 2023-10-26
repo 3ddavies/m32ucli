@@ -44,17 +44,15 @@ type MonitorValues struct {
 //
 //
 
-func setPropertyValue(propMap map[string]Property, propName string, val int) int{
+func setPropertyValue(propMap map[string]Property, propName string, val int) (int, error){
 	var prop16 uint16
 
 	found, ok := propMap[*propName]
 	if !ok {
-		log.Print("Unknown property: %s", *propName)
-		return 0
+		return 0, fmt.Errorf("Unknown property: %s", *propName)
 	}
 	if *val > int(found.Max) || *val < int(found.Min) {
-		log.Print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
-		return 0
+		return 0, fmt.Errorf("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
 	}
 
 	prop16 = found.Value
@@ -85,15 +83,13 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) int
 	err := hid.Init()
 
 	if err != nil {
-		log.Print(err)
-		return 0
+		return 0, fmt.Errorf(err)
 	}
 
 	dev, err := hid.OpenFirst(0x0bda, 0x1100)
 
 	if err != nil {
-		log.Print(err)
-		return 0
+		return 0, fmt.Errorf(err)
 	}
 
 	// TODO: get current value and nicely transition to the expected value like in
@@ -101,11 +97,9 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) int
 	// 0xa of the response if we do a read
 	_, err = dev.Write(buf)
 	if err != nil {
-		log.Print(err)
-		return 0
+		return 0, fmt.Errorf(err)
 	}
-	log.Print("Property set.")
-	return 1
+	return 0, nil
 
 }
 
