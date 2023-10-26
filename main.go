@@ -49,10 +49,10 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) {
 
 	found, ok := propMap[*propName]
 	if !ok {
-		return 0, log.print("Unknown property: %s", *propName)
+		return 0, log.Print("Unknown property: %s", *propName)
 	}
 	if *val > int(found.Max) || *val < int(found.Min) {
-		return 0, log.print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
+		return 0, log.Print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
 	}
 
 	prop16 = found.Value
