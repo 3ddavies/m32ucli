@@ -48,12 +48,12 @@ type MonitorValues struct {
 func setPropertyValue(propMap map[string]Property, propName string, val int) (int, error){
 	var prop16 uint16
 
-	found, ok := propMap[*propName]
+	found, ok := propMap[propName]
 	if !ok {
-		return 0, errors.New(fmt.Sprintf("Unknown property: %s", *propName))
+		return 0, errors.New(fmt.Sprintf("Unknown property: %s", propName))
 	}
-	if *val > int(found.Max) || *val < int(found.Min) {
-		return 0, errors.New(fmt.Sprintf("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max))
+	if val > int(found.Max) || val < int(found.Min) {
+		return 0, errors.New(fmt.Sprintf("Value %d for property %s is not within range: %d-%d", val, found.Name, found.Min, found.Max))
 	}
 
 	prop16 = found.Value
@@ -73,7 +73,7 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 		prop16 &= 0xff
 	}
 
-	msg = append(msg, []byte{byte(prop16), 0, byte(*val)}...)
+	msg = append(msg, []byte{byte(prop16), 0, byte(val)}...)
 
 	// TODO: 0x01 is read, 0x03 is write
 	preamble = []byte{0x51, byte(0x81 + len(msg)), 0x03}
