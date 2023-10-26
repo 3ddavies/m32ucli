@@ -34,6 +34,76 @@ type MonitorValues struct {
 }
 
 
+//	some sample run code:
+//	propValue, err :=setPropertyValue(propMap, propName, propVal)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//
+//
+//
+
+func setPropertyValue(propMap map[string]Property, propName string, val int) {
+	var prop16 uint16
+
+	found, ok := propMap[*propName]
+	if !ok {
+		return 0, log.print("Unknown property: %s", *propName)
+	}
+	if *val > int(found.Max) || *val < int(found.Min) {
+		return 0, log.print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
+	}
+
+	prop16 = found.Value
+
+// Buf is actually 192 bytes, but we need one for the report id
+	buf := make([]byte, 193)
+
+	buf[0] = 0
+	copy(buf[1:], []byte{0x40, 0xc6})
+	copy(buf[1+6:], []byte{0x20, 0, 0x6e, 0, 0x80})
+
+	var preamble []byte
+	msg := []byte{}
+
+	if prop16 > 0xff {
+		msg = append(msg, byte(prop16>>8))
+		prop16 &= 0xff
+	}
+
+	msg = append(msg, []byte{byte(prop16), 0, byte(*val)}...)
+
+	// TODO: 0x01 is read, 0x03 is write
+	preamble = []byte{0x51, byte(0x81 + len(msg)), 0x03}
+
+	copy(buf[1+0x40:], append(preamble, msg...))
+
+
+	err := hid.Init()
+
+	if err != nil {
+		return 0, log.Print(err)
+	}
+
+	dev, err := hid.OpenFirst(0x0bda, 0x1100)
+
+	if err != nil {
+		return 0, log.Print(err)
+	}
+
+	// TODO: get current value and nicely transition to the expected value like in
+	// TODO: read a value if "v" not specified, I think the value is in the byte
+	// 0xa of the response if we do a read
+	_, err = dev.Write(buf)
+	if err != nil {
+		return 0, log.Print(err)
+	}
+	return, log.Print("Property set.")
+
+}
+
+
 func main() {
 	properties := []Property{
 		{
@@ -106,32 +176,45 @@ func main() {
 	}
 
 	propMap := make(map[string]Property)
+
+
 	propHelp := []string{}
 	for _, p := range properties {
 		propMap[p.Name] = p
-		propText := fmt.Sprintf("\t%s (%d-%d)", p.Name, p.Min, p.Max)
-		if p.Description != "" {
-			propText = propText + "\n\t\t" + p.Description
-		}
-		propHelp = append(propHelp, propText)
+		//propText := fmt.Sprintf("\t%s (%d-%d)", p.Name, p.Min, p.Max)
+		//if p.Description != "" {
+		//	propText = propText + "\n\t\t" + p.Description
+		//}
+		//propHelp = append(propHelp, propText)
 	}
 
-	prop := flag.String("prop", "", "Property to set. Available properties: \n"+strings.Join(propHelp, "\n"))
-	propNum := flag.Uint("propNum", 0, "Property number to set instead of -prop")
-	val := flag.Int("val", -1, "Value to set property to")
-	dryrun := flag.Bool("n", false, "Dry run: test commands and print instead")
+	propValue, err :=setPropertyValue(propMap, "input", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+
+
+//the above makes propMap searchable with the name of the prop.
+
+
+
+	//prop := flag.String("prop", "", "Property to set. Available properties: \n"+strings.Join(propHelp, "\n"))
+	//propNum := flag.Uint("propNum", 0, "Property number to set instead of -prop")
+	//val := flag.Int("val", -1, "Value to set property to")
+	//dryrun := flag.Bool("n", false, "Dry run: test commands and print instead")
 	//monitorNum := flag.Int("monitor", 0, "Monitor number (if multiple)")
 
 
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	flag.Parse()
+	//log.SetFlags(log.LstdFlags | log.Lshortfile)
+	//flag.Parse()
 
-	errExit := func(str string) {
-		fmt.Printf("ERROR: %s\n\n", str)
-		flag.Usage()
-		os.Exit(1)
-	}
-
+	//errExit := func(str string) {
+	//	fmt.Printf("ERROR: %s\n\n", str)
+	//	flag.Usage()
+	//	os.Exit(1)
+	//}
+/*
 	if *prop == "" && *propNum == 0 {
 		// TODO: launch a repl or gui with tab completion instead here, or
 		// something like fish_config
@@ -160,83 +243,8 @@ func main() {
 	} else {
 		prop16 = uint16(*propNum)
 	}
-
+*/
 	//everything above this line is just to generate the cli help messages mostly
 
-	// Buf is actually 192 bytes, but we need one for the report id
-	buf := make([]byte, 193)
-
-	buf[0] = 0
-	copy(buf[1:], []byte{0x40, 0xc6})
-	copy(buf[1+6:], []byte{0x20, 0, 0x6e, 0, 0x80})
-
-	var preamble []byte
-	msg := []byte{}
-
-	if prop16 > 0xff {
-		msg = append(msg, byte(prop16>>8))
-		prop16 &= 0xff
-	}
-
-	msg = append(msg, []byte{byte(prop16), 0, byte(*val)}...)
-
-	// TODO: 0x01 is read, 0x03 is write
-	preamble = []byte{0x51, byte(0x81 + len(msg)), 0x03}
-
-	copy(buf[1+0x40:], append(preamble, msg...))
-
-	if *dryrun {
-		log.Println("Would have sent:\n" + hex.Dump(buf))
-		return
-	}
-
-	err := hid.Init()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//the below line is where the HID device is opened, and where I will need to have the check for multiple monitors.
-
-	//Monitor := []MonitorValues{
-	//	{
-	//		Number: 1,
-	//		Serial: "",
-	//	},
-	//	{
-	//		Number: 2,
-	//		Serial: "",
-	//	},
-	//	{
-	//		Number: 3,
-	//		Serial: "",
-	//	},
-	//}
-
-
-
-
-	dev, err := hid.OpenFirst(0x0bda, 0x1100)
-	//dev, err := hid.OpenPath("/dev/usb/hiddev0")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//sn, err := dev.GetDeviceInfo()
-
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
-	//log.Println(sn)
-
-	// TODO: get current value and nicely transition to the expected value like in
-	// TODO: read a value if "v" not specified, I think the value is in the byte
-	// 0xa of the response if we do a read
-	_, err = dev.Write(buf)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Print("Property set.")
+	
 }
