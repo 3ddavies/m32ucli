@@ -84,13 +84,13 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 	err := hid.Init()
 
 	if err != nil {
-		return 0, errors.New(fmt.Sprintf(err))
+		return 0, err
 	}
 
 	dev, err := hid.OpenFirst(0x0bda, 0x1100)
 
 	if err != nil {
-		return 0, errors.New(fmt.Sprintf(err))
+		return 0, err
 	}
 
 	// TODO: get current value and nicely transition to the expected value like in
@@ -98,7 +98,7 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 	// 0xa of the response if we do a read
 	_, err = dev.Write(buf)
 	if err != nil {
-		return 0, errors.New(fmt.Sprintf(err))
+		return 0, err
 	}
 	return 0, nil
 
