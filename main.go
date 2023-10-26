@@ -44,7 +44,7 @@ type MonitorValues struct {
 //
 //
 
-func setPropertyValue(propMap map[string]Property, propName string, val int) {
+func setPropertyValue(propMap map[string]Property, propName string, val int) int{
 	var prop16 uint16
 
 	found, ok := propMap[*propName]
