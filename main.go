@@ -178,7 +178,7 @@ func main() {
 	propMap := make(map[string]Property)
 
 
-	propHelp := []string{}
+	//propHelp := []string{}
 	for _, p := range properties {
 		propMap[p.Name] = p
 		//propText := fmt.Sprintf("\t%s (%d-%d)", p.Name, p.Min, p.Max)
@@ -189,6 +189,7 @@ func main() {
 	}
 
 	propValue, err :=setPropertyValue(propMap, "input", 0)
+	log.Print(propValue)
 	if err != nil {
 		log.Fatal(err)
 	}
