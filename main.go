@@ -99,7 +99,7 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) {
 	if err != nil {
 		return 0, log.Print(err)
 	}
-	return, log.Print("Property set.")
+	return 0, log.Print("Property set.")
 
 }
 
