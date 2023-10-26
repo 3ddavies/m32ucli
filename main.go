@@ -49,10 +49,12 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) int
 
 	found, ok := propMap[*propName]
 	if !ok {
-		return 0, log.Print("Unknown property: %s", *propName)
+		log.Print("Unknown property: %s", *propName)
+		return 0
 	}
 	if *val > int(found.Max) || *val < int(found.Min) {
-		return 0, log.Print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
+		log.Print("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
+		return 0
 	}
 
 	prop16 = found.Value
@@ -83,13 +85,15 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) int
 	err := hid.Init()
 
 	if err != nil {
-		return 0, log.Print(err)
+		log.Print(err)
+		return 0
 	}
 
 	dev, err := hid.OpenFirst(0x0bda, 0x1100)
 
 	if err != nil {
-		return 0, log.Print(err)
+		log.Print(err)
+		return 0
 	}
 
 	// TODO: get current value and nicely transition to the expected value like in
@@ -97,9 +101,11 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) int
 	// 0xa of the response if we do a read
 	_, err = dev.Write(buf)
 	if err != nil {
-		return 0, log.Print(err)
+		log.Print(err)
+		return 0
 	}
-	return 0, log.Print("Property set.")
+	log.Print("Property set.")
+	return 1
 
 }
 
