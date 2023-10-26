@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/hex"
-	"flag"
+	//"encoding/hex"
+	//"flag"
 	"fmt"
 	"log"
-	"os"
-	"strings"
+	//"os"
+	//"strings"
 	"errors"
 
 	"github.com/sstallion/go-hid"
