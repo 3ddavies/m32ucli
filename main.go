@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"errors"
 
 	"github.com/sstallion/go-hid"
 )
@@ -49,10 +50,10 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 
 	found, ok := propMap[*propName]
 	if !ok {
-		return 0, fmt.Errorf("Unknown property: %s", *propName)
+		return 0, errors.New("Unknown property: %s", *propName)
 	}
 	if *val > int(found.Max) || *val < int(found.Min) {
-		return 0, fmt.Errorf("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
+		return 0, errors.New("Value %d for property %s is not within range: %d-%d", *val, found.Name, found.Min, found.Max)
 	}
 
 	prop16 = found.Value
@@ -83,13 +84,13 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 	err := hid.Init()
 
 	if err != nil {
-		return 0, fmt.Errorf(err)
+		return 0, errors.New(err)
 	}
 
 	dev, err := hid.OpenFirst(0x0bda, 0x1100)
 
 	if err != nil {
-		return 0, fmt.Errorf(err)
+		return 0, errors.New(err)
 	}
 
 	// TODO: get current value and nicely transition to the expected value like in
@@ -97,7 +98,7 @@ func setPropertyValue(propMap map[string]Property, propName string, val int) (in
 	// 0xa of the response if we do a read
 	_, err = dev.Write(buf)
 	if err != nil {
-		return 0, fmt.Errorf(err)
+		return 0, errors.New(err)
 	}
 	return 0, nil
 
