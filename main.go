@@ -216,8 +216,8 @@ func main() {
 
 
 
-	//dev, err := hid.OpenFirst(0x0bda, 0x1100)
-	dev, err := hid.OpenPath("/dev/usb/hiddev0")
+	dev, err := hid.OpenFirst(0x0bda, 0x1100)
+	//dev, err := hid.OpenPath("/dev/usb/hiddev0")
 
 	if err != nil {
 		log.Fatal(err)
@@ -225,9 +225,9 @@ func main() {
 
 	//sn, err := dev.GetDeviceInfo()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	//log.Println(sn)
 
